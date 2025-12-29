@@ -7,4 +7,7 @@ spring:
         git:
           default-label: main
           uri: https://github.com/Oopshie/ToolRentMicroservicios
-          search-paths: 
+          search-paths: config-data
+
+  application:
+    name: config-service
