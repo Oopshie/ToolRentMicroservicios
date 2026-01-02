@@ -1,5 +1,5 @@
 server:
-  port: 9090
+  port: 8090
   
 eureka:
   client:
@@ -17,7 +17,12 @@ spring:
         locator:
           enabled: true
       routes:
-        - id: ms-tools-service
-          uri: lb://ms-tools-service
+        - id: ms-tool-service
+          uri: lb://ms-tool-service
           predicates:
             - Path=/api/tools/**
+
+        - id: ms-client-service
+          uri: lb://ms-client-service
+          predicates:
+            - Path=/api/clients/**
