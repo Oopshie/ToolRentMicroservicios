@@ -1,0 +1,37 @@
+spring:
+  application:
+    name: ms-tools-service
+  cloud:
+    config:
+      enabled: true
+      uri: http://localhost:8081/
+  datasource:
+    url: jdbc:postgresql://localhost:5432/ToolRent-Tools
+    username: postgres
+    password: 1234
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: sisph-backend
+            client-secret: bshmLIgKCJQG4t5t1xg2a7nErt2A2Cbt
+            scope: openid,profile,email
+            authorization-grant-type: authorization_code
+            redirect-uri: "http://localhost:8090/login/oauth2/code/keycloak"
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:9090/realms/sisph-realm
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9090/realms/sisph-realm
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
