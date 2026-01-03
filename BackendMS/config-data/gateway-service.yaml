@@ -1,32 +1,38 @@
 server:
   port: 8090
-  
+
 eureka:
   client:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: http://eureka-service:8761/eureka
   instance:
-    hostname: localhost
+    hostname: gateway-service
+    prefer-ip-address: true
 
 spring:
   cloud:
     gateway:
       globalcors:
-        corsConfigurations:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
           '[/**]':
-            allowedOrigins:
-              - http://localhost:5173
+            allowedOriginPatterns:
+              - "http://127.0.0.1:*"
+              - "http://localhost:*"
             allowedMethods:
-              - GET
-              - POST
-              - PUT
-              - DELETE
-              - OPTIONS
-            allowedHeaders:
-              - "*"
+              - "GET"
+              - "POST"
+              - "PUT"
+              - "DELETE"
+              - "OPTIONS"
+            allowedHeaders: "*"
             allowCredentials: true
+
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin Access-Control-Allow-Credentials, RETAIN_FIRST
+
       discovery:
         locator:
           enabled: true
