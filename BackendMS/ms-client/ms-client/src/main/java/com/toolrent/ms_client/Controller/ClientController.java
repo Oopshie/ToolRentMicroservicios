@@ -17,7 +17,7 @@ public class ClientController {
     @Autowired
     private ClientRepository clientRepository;
 
-    @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
+    //@PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
     @PostMapping("/")
     public ResponseEntity<ClientEntity> addClient(@RequestBody ClientEntity client) {
         ClientEntity clientNew = clientService.addClient(client);
