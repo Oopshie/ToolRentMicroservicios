@@ -1,7 +1,7 @@
-package com.Tingeso.ToolRent.Controllers;
+package com.toolrent.ms_kardex.Controller;
 
-import com.Tingeso.ToolRent.DTOs.KardexDTO;
-import com.Tingeso.ToolRent.Services.KardexService;
+import com.toolrent.ms_kardex.Model.KardexDTO;
+import com.toolrent.ms_kardex.Service.KardexService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

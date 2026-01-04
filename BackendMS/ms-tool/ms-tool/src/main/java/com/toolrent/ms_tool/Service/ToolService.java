@@ -1,99 +1,234 @@
 package com.toolrent.ms_tool.Service;
 
-import com.toolrent.ms_tool.Entity.ToolEntity;
-import com.toolrent.ms_tool.Entity.ToolUnitEntity;
+import com.toolrent.ms_tool.Entity.ToolEntity;;
+import com.toolrent.ms_tool.Model.Kardex;
 import com.toolrent.ms_tool.Repository.ToolRepository;
-import com.toolrent.ms_tool.Repository.ToolUnitRepository;
 import jakarta.transaction.Transactional;
+import jakarta.validation.constraints.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.text.Normalizer;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ToolService {
+    @Autowired
+    private ToolRepository toolRepository;
 
-    private final ToolRepository toolRepository;
-    private final ToolUnitRepository toolUnitRepository;
+    @Autowired
+    private RestTemplate restTemplate;
 
-    public ToolService(ToolRepository toolRepository,
-                       ToolUnitRepository toolUnitRepository) {
-        this.toolRepository = toolRepository;
-        this.toolUnitRepository = toolUnitRepository;
-    }
+    public ToolEntity addTool(ToolEntity tool, String employeeName){
 
-    // ====== LISTADOS ======
+        //convertir a minusculas el nombre y categoria
+        tool.setName(tool.getName().trim().toLowerCase());
+        tool.setCategory(tool.getCategory().trim().toLowerCase());
 
-    public List<ToolEntity> getAllTools() {
-        return toolRepository.findAll();
-    }
+        // asignar estado 1 (disponible) al crear una herramienta
+        tool.setStatus(1);
 
-    public List<ToolEntity> getToolsByName(String name) {
-        return toolRepository.findByNameContainingIgnoreCase(name);
-    }
-
-    public List<ToolEntity> getToolsByCategory(String category) {
-        return toolRepository.findByCategory(category.toLowerCase());
-    }
-
-    public ToolEntity getToolById(Long id) {
-        return toolRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Herramienta no encontrada"));
-    }
-
-    // ====== CREAR HERRAMIENTA + UNIDADES ======
-
-    @Transactional
-    public ToolEntity createTool(String name, String category,
-                           Integer replacementValue, int quantity) {
-
-        ToolEntity tool = new ToolEntity();
-        tool.setName(name.toLowerCase().trim());
-        tool.setCategory(category.toLowerCase().trim());
-        tool.setReplacementValue(replacementValue);
-        tool.setActive(true);
-
+        // GUARDAR primero para obtener ID
         ToolEntity saved = toolRepository.save(tool);
 
-        List<ToolUnitEntity> units = new ArrayList<>();
-        for (int i = 0; i < quantity; i++) {
-            ToolUnitEntity u = new ToolUnitEntity();
-            u.setTool(saved);
-            u.setStatus(1); // Disponible
-            units.add(u);
+        // Ahora sí el ID existe, generar movimiento de kardex
+        try {
+            Kardex mov = new Kardex();
+            mov.setMovementType(4); // 4 = Ingreso
+            mov.setToolId(saved.getId());
+            mov.setQuantity(1);
+            mov.setMovementDate(LocalDateTime.now().toString());
+            mov.setEmployeeName(employeeName);
+
+            restTemplate.postForObject("http://ms-kardex-service/api/kardex/internal", mov, Void.class);
+
+        } catch (Exception e) {
+            System.out.println("Error al registrar movimiento de kardex: " + e.getMessage());
         }
 
-        toolUnitRepository.saveAll(units);
         return saved;
     }
 
-    // ====== ACTUALIZAR DATOS DEL PRODUCTO ======
+    public List<ToolEntity> getToolsByName(String namePart){
+        return toolRepository.findByNameContainingIgnoreCase(namePart);
+    }
+
+    public ToolEntity getToolById(Long id){
+        return toolRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Tool not found with id: " + id));
+    }
+
+    public List<ToolEntity> getAllTools() {
+
+        List<ToolEntity> tools = toolRepository.findAll();
+
+        // contar cuántas hay disponibles POR NOMBRE
+        Map<String, Long> disponiblesMap = tools.stream()
+                .filter(t -> t.getStatus() == 1)
+                .collect(Collectors.groupingBy(
+                        ToolEntity::getName,
+                        Collectors.counting()
+                ));
+
+        // insertar ese stock en cada herramienta
+        for (ToolEntity t : tools) {
+            long stock = disponiblesMap.getOrDefault(t.getName(), 0L);
+            t.setStock((int) stock);
+        }
+
+        return tools;
+    }
+
+    public ArrayList<ToolEntity> getToolsByCategory(String category){
+        return (ArrayList<ToolEntity>)toolRepository.findByCategory(category);
+    }
+
+    private String normalize(String input) {
+        return Normalizer.normalize(input, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .trim()
+                .toLowerCase();
+    }
 
     @Transactional
-    public ToolEntity updateTool(Long id, ToolEntity updated) {
-        ToolEntity existing = getToolById(id);
+    public ToolEntity updateToolFields(ToolEntity tool) {
 
-        existing.setName(updated.getName());
-        existing.setCategory(updated.getCategory());
-        existing.setReplacementValue(updated.getReplacementValue());
+        ToolEntity existing = toolRepository.findById(tool.getId())
+                .orElseThrow(() -> new RuntimeException("Herramienta no encontrada"));
+
+        // NO modificar status aquí
+        existing.setName(tool.getName());
+        existing.setCategory(tool.getCategory());
+        existing.setReplacementValue(tool.getReplacementValue());
 
         return toolRepository.save(existing);
     }
 
-    // ====== STOCK ======
+    @Transactional
+    public void updateToolGroupValues(String name, String category, Integer newValue) {
 
-    public long getAvailableStock(Long toolId) {
-        return toolUnitRepository.countByToolIdAndStatus(toolId, 1);
+        List<ToolEntity> group = toolRepository.findByNameAndCategory(
+                normalize(name),
+                normalize(category)
+        );
+
+        for (ToolEntity t : group) {
+            t.setReplacementValue(newValue);
+        }
+
+        toolRepository.saveAll(group);
     }
 
-    // ====== DUPLICADO ======
+    public ToolEntity updateToolStatus(Long toolId, int newStatus, String employeeName) {
 
-    public Optional<ToolEntity> checkDuplicate(String name, String category) {
-        return toolRepository.findByNameAndCategory(
+        ToolEntity tool = toolRepository.findById(toolId)
+                .orElseThrow(() -> new RuntimeException("Herramienta no encontrada"));
+
+        int oldStatus = tool.getStatus(); // ✔ CAPTURAR ANTES DE CAMBIARLO
+        System.out.println("OLD STATUS = " + oldStatus + " | NEW = " + newStatus);
+
+        // Aplicar nuevo estado
+        tool.setStatus(newStatus);
+        ToolEntity saved = toolRepository.save(tool);
+
+
+        try {
+            Kardex mov = new Kardex();
+            mov.setToolId(toolId);
+            mov.setQuantity(1);
+            mov.setMovementDate(LocalDateTime.now().toString());
+            mov.setEmployeeName(employeeName);
+            boolean sendToKardex = false;
+
+            if (newStatus == 3 && (oldStatus == 1 || oldStatus == 2)) {
+                mov.setMovementType(5); // En reparación
+                sendToKardex = true;
+            } else if (newStatus == 1 && oldStatus == 3) {
+                mov.setMovementType(4); // Reparación completada
+                sendToKardex = true;
+            } else if (newStatus == 4) {
+                mov.setMovementType(3); // Baja
+                sendToKardex = true;
+            }
+            if (sendToKardex) {
+                restTemplate.postForObject("http://ms-kardex-service/api/kardex/internal", mov, Void.class);
+            }
+        } catch (Exception e) {
+            System.out.println("Error al registrar movimiento de kardex: " + e.getMessage());
+        }
+
+        return saved;
+    }
+
+    public ToolEntity deactivateTool(Long id){
+        ToolEntity tool = toolRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Herramienta no encontrada con id: " + id));
+        tool.setStatus(4); // Estado 4 = dado de baja
+        return toolRepository.save(tool);
+    }
+
+    public void deleteToolById(Long id){
+        toolRepository.deleteById(id);
+    }
+
+    public Map<String, Object> checkDuplicateAndSuggestPrice(@NotNull String name, @NotNull String category) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Normalizar entrada (como lo hace addTool)
+        String normalizedName = name.trim().toLowerCase();
+        String normalizedCategory = category.trim().toLowerCase();
+
+        // Buscar herramientas con el mismo nombre y categoría
+        List<ToolEntity> existingTools = toolRepository.findByNameAndCategory(normalizedName, normalizedCategory);
+
+        if (!existingTools.isEmpty()) {
+            // Si existe, usar el precio de reposición de la primera coincidencia
+            ToolEntity existingTool = existingTools.get(0);
+            response.put("exists", true);
+            response.put("suggestedPrice", existingTool.getReplacementValue());
+            response.put("message", "Se encontró una herramienta similar. Precio sugerido basado en datos existentes.");
+        } else {
+            // No existe duplicado
+            response.put("exists", false);
+            response.put("suggestedPrice", null);
+            response.put("message", "No se encontraron herramientas similares.");
+        }
+
+        return response;
+    }
+
+    public List<ToolEntity> getToolsByStatus(int status) {
+        return toolRepository.findByStatus(status);
+    }
+
+    @Transactional
+    public void updateReplacementValueForGroup(String name, String category, int newRP){
+        List<ToolEntity> tools = toolRepository.findByNameAndCategory(
                 name.toLowerCase().trim(),
                 category.toLowerCase().trim()
         );
+        for (ToolEntity t : tools) {
+            t.setReplacementValue(newRP);
+        }
+
+        toolRepository.saveAll(tools);
     }
+
+
+    private Map<String, Long> calcularDisponiblesPorNombre(List<ToolEntity> herramientas) {
+        return herramientas.stream()
+                .filter(t -> t.getStatus() == 1)  // status 1 = disponible
+                .collect(Collectors.groupingBy(
+                        ToolEntity::getName,
+                        Collectors.counting()
+                ));
+    }
+
+
+
 }
 

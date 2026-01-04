@@ -38,6 +38,11 @@ public class ClientService {
         return (ArrayList<ClientEntity>)clientRepository.findAll();
     }
 
+    public ClientEntity getClientByRut(String rut) {
+        return clientRepository.findByRut(rut)
+                .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+    }
+
     public ClientEntity getStatusByRut(String rut) {
         return clientRepository.findByRut(rut)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));

@@ -1,17 +1,14 @@
-package com.toolrent.ms_tool.Entity;
+package com.toolrent.ms_kardex.Model;
 
-import jakarta.persistence.*;
+
 import lombok.*;
 
-@Entity
-@Table(name = "Tool")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ToolEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
+
+public class Tool {
+
     private Long id;
 
     private String name;
@@ -19,6 +16,5 @@ public class ToolEntity {
     private Integer replacementValue;
     private int status; // Available = 1, Lent = 2, Under repair = 3, Decommissioned = 4
 
-    @Transient
     private Integer stock;
 }
