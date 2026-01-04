@@ -47,3 +47,23 @@ spring:
           uri: lb://ms-client-service
           predicates:
             - Path=/api/clients/**
+
+        - id: ms-rent-service
+          uri: lb://ms-rental-service
+          predicates:
+            - Path=/api/rent/**
+
+        - id: ms-kardex-service
+          uri: lb://ms-kardex-service
+          predicates:
+            - Path=/api/kardex/**
+
+        - id: ms-rate-service.yaml
+          uri: lb://ms-rate-service.yaml
+          predicates:
+          - Path=/api/rates/**
+
+        - id: ms-report-service
+          uri: lb://ms-report-service
+          predicates:
+            - Path=/api/reports/**
