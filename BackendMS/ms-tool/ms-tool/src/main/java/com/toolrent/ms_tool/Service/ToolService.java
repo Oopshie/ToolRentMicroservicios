@@ -1,6 +1,6 @@
 package com.toolrent.ms_tool.Service;
 
-import com.toolrent.ms_tool.Entity.ToolEntity;;
+import com.toolrent.ms_tool.Entity.ToolEntity;
 import com.toolrent.ms_tool.Model.Kardex;
 import com.toolrent.ms_tool.Repository.ToolRepository;
 import jakarta.transaction.Transactional;

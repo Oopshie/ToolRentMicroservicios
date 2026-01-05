@@ -49,7 +49,7 @@ spring:
             - Path=/api/clients/**
 
         - id: ms-rent-service
-          uri: lb://ms-rental-service
+          uri: lb://ms-rent-service
           predicates:
             - Path=/api/rent/**
 
@@ -58,12 +58,12 @@ spring:
           predicates:
             - Path=/api/kardex/**
 
-        - id: ms-rate-service.yaml
-          uri: lb://ms-rate-service.yaml
+        - id: ms-rate-service
+          uri: lb://ms-rate-service
           predicates:
-          - Path=/api/rates/**
+          - Path=/api/rate/**
 
         - id: ms-report-service
           uri: lb://ms-report-service
           predicates:
-            - Path=/api/reports/**
+            - Path=/api/report/**
