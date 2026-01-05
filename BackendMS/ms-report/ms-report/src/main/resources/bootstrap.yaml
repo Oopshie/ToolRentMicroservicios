@@ -1,12 +1,12 @@
 spring:
   application:
-    name: ms-rate-service
+    name: ms-report-service
   cloud:
     config:
       enabled: true
       uri: http://localhost:8081/
   datasource:
-    url: jdbc:postgresql://localhost:5432/ToolRent-Rate
+    url: jdbc:postgresql://localhost:5432/ToolRent-Report
     username: postgres
     password: 1234
   security:
@@ -35,3 +35,4 @@ eureka:
     register-with-eureka: true
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
