@@ -1,6 +1,7 @@
 package com.toolrent.ms_rent.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.toolrent.ms_rent.Model.Client;
 import com.toolrent.ms_rent.Model.Tool;
 import jakarta.persistence.*;
@@ -21,8 +22,12 @@ public class RentEntity {
     @Column (unique = true, nullable = false)
     private long id;
 
+    @Column(name = "client_id")
     private Long clientId;
+
+    @Column(name = "tool_id")
     private Long toolId;
+
     private String employeeName;
 
     private String startDate;

@@ -5,15 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa70f528-1fd9-4bc8-bc3b-d6896c184cb0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../ms-kardex/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-kardex/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-kardex/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-kardex/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-rate/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-rate/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-rate/.idea/ms-rate.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-rate/.idea/ms-rate.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-rent/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-rent/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-rent/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-rent/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-tool/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-tool/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-tool/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-tool/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-tool/ms-tool/src/main/java/com/toolrent/ms_tool/Service/ToolService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-tool/ms-tool/src/main/java/com/toolrent/ms_tool/Service/ToolService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-rate/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-rate/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-rent/ms-rent/src/main/java/com/toolrent/ms_rent/Entity/RentEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-rent/ms-rent/src/main/java/com/toolrent/ms_rent/Entity/RentEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-rent/ms-rent/src/main/java/com/toolrent/ms_rent/Model/RentDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-rent/ms-rent/src/main/java/com/toolrent/ms_rent/Model/RentDTO.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-rent/ms-rent/src/main/java/com/toolrent/ms_rent/Service/RentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-rent/ms-rent/src/main/java/com/toolrent/ms_rent/Service/RentService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Model/Rent.java" beforeDir="false" afterPath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Model/Rent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Model/Tool.java" beforeDir="false" afterPath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Model/Tool.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Service/ReportService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Service/ReportService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +59,7 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "project.structure.last.edited": "Project",

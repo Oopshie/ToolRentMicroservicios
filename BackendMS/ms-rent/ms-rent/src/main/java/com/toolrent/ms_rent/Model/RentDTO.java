@@ -13,6 +13,9 @@ public class RentDTO {
     private String clientName;
     private String toolName;
 
+    private Long clientId;
+    private Long toolId;
+
     private String startDate;
     private String finishDate;
     private String returnDate;
@@ -26,4 +29,8 @@ public class RentDTO {
     private int totalAmount;
 
     private String employeeName;
+
+
+
+
 }
