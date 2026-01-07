@@ -20,19 +20,28 @@ public class ReportService {
     private RestTemplate restTemplate;
 
     //=============================================================
-    // 1. REPORTE DE ARRIENDOS ACTIVOS
+    // 1. REPORTE DE ARRIENDOS ACTIVOS (FILTRADO)
     //=============================================================
-    public List<ActiveRentReportDTO> getActiveRents(){
-        // Traer arriendos (que ya vienen con nombres desde ms-rent)
+    public List<ActiveRentReportDTO> getActiveRents(String fromStr, String toStr){
         Rent[] allRents = restTemplate.getForObject("http://ms-rent-service/api/rent/all", Rent[].class);
         if (allRents == null) return new ArrayList<>();
+
+        // 1. Convertir fechas (si son nulas, usamos rango infinito)
+        LocalDate fromDate = (fromStr == null || fromStr.isEmpty()) ? LocalDate.MIN : LocalDate.parse(fromStr);
+        LocalDate toDate = (toStr == null || toStr.isEmpty()) ? LocalDate.MAX : LocalDate.parse(toStr);
 
         List<ActiveRentReportDTO> report = new ArrayList<>();
         LocalDate today = LocalDate.now();
 
-        // Filtramos y mapeamos
         Arrays.stream(allRents)
-                .filter(Rent::isActive)
+                .filter(Rent::isActive) // Primero filtramos que esté activo
+                .filter(rent -> {       // LUEGO FILTRAMOS POR FECHA DE INICIO
+                    try {
+                        LocalDate start = LocalDate.parse(rent.getStartDate());
+                        // Si está fuera del rango, lo descartamos
+                        return !start.isBefore(fromDate) && !start.isAfter(toDate);
+                    } catch (Exception e) { return false; }
+                })
                 .forEach(rent -> {
                     boolean isLate = false;
                     try {
@@ -43,7 +52,6 @@ public class ReportService {
 
                     report.add(new ActiveRentReportDTO(
                             rent.getId(),
-                            // ✅ USAMOS LOS NOMBRES QUE YA VIENEN EN EL JSON
                             rent.getClientName() != null ? rent.getClientName() : "Desconocido",
                             rent.getToolName() != null ? rent.getToolName() : "Desconocida",
                             rent.getStartDate(),
@@ -56,22 +64,32 @@ public class ReportService {
     }
 
     //=============================================================
-    // 2. REPORTE DE CLIENTES MOROSOS
+    // 2. REPORTE DE CLIENTES MOROSOS (FILTRADO)
     //=============================================================
-    public List<LateClientReportDTO> getLateClients() {
+    public List<LateClientReportDTO> getLateClients(String fromStr, String toStr) {
         Rent[] allRents = restTemplate.getForObject("http://ms-rent-service/api/rent/all", Rent[].class);
         if (allRents == null) return new ArrayList<>();
 
         LocalDate today = LocalDate.now();
         Map<Long, List<Rent>> rentsByClient = new HashMap<>();
 
+        // 1. Convertir fechas usando las variables que recibimos
+        LocalDate fromDate = (fromStr == null || fromStr.isEmpty()) ? LocalDate.MIN : LocalDate.parse(fromStr);
+        LocalDate toDate = (toStr == null || toStr.isEmpty()) ? LocalDate.MAX : LocalDate.parse(toStr);
+
         // Identificar morosos
         for (Rent rent : allRents) {
             try {
                 if (rent.getFinishDate() == null) continue;
                 LocalDate finish = LocalDate.parse(rent.getFinishDate());
-                boolean isLate = false;
 
+                // --- FILTRO DE FECHAS ---
+                // Si la fecha de término está fuera del rango, saltamos este arriendo
+                if (finish.isBefore(fromDate) || finish.isAfter(toDate)) {
+                    continue;
+                }
+
+                boolean isLate = false;
                 if (rent.isActive()) {
                     if (finish.isBefore(today)) isLate = true;
                 } else if (rent.getReturnDate() != null) {
@@ -90,10 +108,19 @@ public class ReportService {
             Long clientId = entry.getKey();
             List<Rent> lateRents = entry.getValue();
 
-            // Usamos el nombre del PRIMER arriendo de la lista (ya viene desde ms-rent)
             String clientName = "Desconocido";
             if (!lateRents.isEmpty() && lateRents.get(0).getClientName() != null) {
                 clientName = lateRents.get(0).getClientName();
+            }
+
+            String clientRut = "Sin RUT";
+            try {
+                Map clientData = restTemplate.getForObject("http://ms-client-service/api/client/" + clientId, Map.class);
+                if (clientData != null && clientData.get("rut") != null) {
+                    clientRut = clientData.get("rut").toString();
+                }
+            } catch (Exception e) {
+                System.out.println("No se pudo obtener RUT para cliente " + clientId);
             }
 
             long totalLateDays = 0;
@@ -113,8 +140,8 @@ public class ReportService {
 
             report.add(new LateClientReportDTO(
                     clientId,
-                    clientName, // ✅ Nombre directo
-                    "Ver Detalle", // El RUT no viene en ms-rent, ponemos texto genérico para no romper
+                    clientName,
+                    clientRut,
                     totalLateDays,
                     occurrences
             ));
@@ -123,17 +150,27 @@ public class ReportService {
     }
 
     //=============================================================
-    // 3. RANKING
+    // 3. RANKING (FILTRADO)
     //=============================================================
-    public List<ToolRankingReportDTO> getToolRanking() {
+    public List<ToolRankingReportDTO> getToolRanking(String fromStr, String toStr) {
         Rent[] allRents = restTemplate.getForObject("http://ms-rent-service/api/rent/all", Rent[].class);
         if (allRents == null) return new ArrayList<>();
+
+        // 1. Convertir fechas
+        LocalDate fromDate = (fromStr == null || fromStr.isEmpty()) ? LocalDate.MIN : LocalDate.parse(fromStr);
+        LocalDate toDate = (toStr == null || toStr.isEmpty()) ? LocalDate.MAX : LocalDate.parse(toStr);
 
         // Agrupar por NOMBRE DE HERRAMIENTA directamente
         Map<String, Long> counts = Arrays.stream(allRents)
                 .filter(r -> r.getToolName() != null)
+                .filter(r -> { // --- FILTRO DE FECHAS ---
+                    try {
+                        LocalDate start = LocalDate.parse(r.getStartDate());
+                        return !start.isBefore(fromDate) && !start.isAfter(toDate);
+                    } catch (Exception e) { return false; }
+                })
                 .collect(Collectors.groupingBy(
-                        Rent::getToolName, // Agrupamos por el nombre que ya viene
+                        Rent::getToolName,
                         Collectors.counting()
                 ));
 
@@ -141,7 +178,7 @@ public class ReportService {
         counts.forEach((name, count) -> {
             report.add(new ToolRankingReportDTO(
                     name,
-                    "General", // Categoría no viene en Rent, usamos genérico o la sacas de otro lado si urge
+                    "General",
                     count
             ));
         });

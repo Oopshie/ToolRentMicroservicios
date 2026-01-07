@@ -3,32 +3,34 @@ import reportService from "../services/reportService";
 import "../report.css";
 
 export default function LateClientsReport() {
-  const [late, setLate] = useState([]);
-  const [filtered, setFiltered] = useState([]);
+  // 1. Estado único para la lista que viene del servidor
+  const [clients, setClients] = useState([]);
 
+  // 2. Estados para los inputs de fecha
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
+  // 3. Función reutilizable para pedir datos al backend
+  const fetchReport = (startDate, endDate) => {
+    reportService.getLateClients(startDate, endDate)
+      .then((res) => {
+        console.log("📌 Datos recibidos en LateClientsReport:", res.data);
+        setClients(res.data);
+      })
+      .catch((err) => {
+        console.error("Error cargando reporte", err);
+        setClients([]); // Tabla vacía si hay error
+      });
+  };
+
+  // 4. Carga inicial (trae todo el historial)
   useEffect(() => {
-    reportService.getLateClients().then((res) => {
-      console.log("📌 Datos recibidos en LateClientsReport:", res.data);
-      setLate(res.data);
-      setFiltered(res.data);
-    });
+    fetchReport("", "");
   }, []);
 
-  const filter = () => {
-    if (!from && !to) {
-      setFiltered(late);
-      return;
-    }
-
-    const result = late.filter((c) => {
-      const d = c.finishdate; // viene como string desde el backend
-      return (!from || d >= from) && (!to || d <= to);
-    });
-
-    setFiltered(result);
+  // 5. Botón Filtrar: Llama al backend con las fechas seleccionadas
+  const handleFilter = () => {
+    fetchReport(from, to);
   };
 
   return (
@@ -40,35 +42,51 @@ export default function LateClientsReport() {
         {/* FILTROS */}
         <div className="filter-row">
           <label>Desde:</label>
-          <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
+          <input 
+            type="date" 
+            value={from} 
+            onChange={(e) => setFrom(e.target.value)} 
+          />
 
           <label>Hasta:</label>
-          <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
+          <input 
+            type="date" 
+            value={to} 
+            onChange={(e) => setTo(e.target.value)} 
+          />
 
-          <button className="filter-btn" onClick={filter}>Filtrar</button>
+          <button className="filter-btn" onClick={handleFilter}>
+            Filtrar
+          </button>
         </div>
 
-        {/* TABLA */}
+        {/* TABLA ACTUALIZADA */}
         <table className="report-table">
           <thead>
             <tr>
+              {/* Agregamos RUT y cambiamos columnas según el DTO */}
+              <th>RUT</th>
               <th>Cliente</th>
-              <th>Fecha de Término</th>
+              <th>Total Días Atraso</th>
+              <th>Veces Atrasado</th>
             </tr>
           </thead>
 
           <tbody>
-            {filtered.length === 0 ? (
+            {clients.length === 0 ? (
               <tr>
-                <td colSpan="2" style={{ textAlign: "center" }}>
+                <td colSpan="4" style={{ textAlign: "center" }}>
                   No hay clientes con atraso en este rango
                 </td>
               </tr>
             ) : (
-              filtered.map((c) => (
-                <tr key={c.rentid}>
-                  <td>{c.clientname}</td>
-                  <td>{c.finishdate}</td>
+              clients.map((c, index) => (
+                // Usamos clientId como key (o index si no viene)
+                <tr key={c.clientId || index}>
+                  <td>{c.rut}</td>         {/* Dato nuevo desde ms-client */}
+                  <td>{c.clientName}</td>  {/* Ojo: camelCase, igual que en Java */}
+                  <td>{c.totalLateDays}</td>
+                  <td>{c.totalLateOccurrences}</td>
                 </tr>
               ))
             )}

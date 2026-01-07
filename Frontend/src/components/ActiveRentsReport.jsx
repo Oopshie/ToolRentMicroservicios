@@ -3,32 +3,34 @@ import reportService from "../services/reportService";
 import "../report.css"; 
 
 export default function ActiveRentsReport() {
+  // Solo necesitamos una variable para guardar lo que nos responde el servidor
   const [rents, setRents] = useState([]);
-  const [filtered, setFiltered] = useState([]);
 
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
+  // FUNCIÓN CENTRAL: Pide los datos al backend (con o sin fechas)
+  const fetchReport = (startDate, endDate) => {
+    reportService.getActiveRents(startDate, endDate)
+      .then((res) => {
+        console.log("Active rents recibidos:", res.data); 
+        setRents(res.data); // Actualizamos la tabla directamente
+      })
+      .catch(err => {
+        console.error("Error cargando reporte", err);
+        setRents([]); // Si falla o no hay datos, tabla vacía
+      });
+  };
+
+  // 1. Carga inicial: Pedimos todo sin filtros
   useEffect(() => {
-    reportService.getActiveRents().then((res) => {
-      console.log("Active rents recibidos:", res.data); // Debug útil
-      setRents(res.data);
-      setFiltered(res.data);
-    });
+    fetchReport("", "");
   }, []);
 
+  // 2. Botón Filtrar: Pedimos de nuevo usando las fechas del input
   const filter = () => {
-    if (!from && !to) {
-      setFiltered(rents);
-      return;
-    }
-
-    const result = rents.filter((r) => {
-      const d = r.startDate;
-      return (!from || d >= from) && (!to || d <= to);
-    });
-
-    setFiltered(result);
+    // Ya no usamos .filter() de Javascript, llamamos al backend
+    fetchReport(from, to);
   };
 
   return (
@@ -66,23 +68,35 @@ export default function ActiveRentsReport() {
               <th>Herramienta</th>
               <th>Fecha Inicio</th>
               <th>Fecha Término</th>
+              {/* Opcional: Agregué esta columna porque tu Backend la envía */}
+              <th>Estado</th> 
             </tr>
           </thead>
 
           <tbody>
-            {filtered.length === 0 ? (
+            {rents.length === 0 ? (
               <tr>
-                <td colSpan="4" style={{ textAlign: "center" }}>
+                <td colSpan="5" style={{ textAlign: "center" }}>
                   No hay arriendos en este rango
                 </td>
               </tr>
             ) : (
-              filtered.map((r) => (
-                <tr key={r.rentId ?? r.id}>
+              rents.map((r) => (
+                <tr key={r.id}>
+                  {/* Asegúrate que estos nombres coincidan con tu DTO de Java */}
                   <td>{r.clientName}</td>
                   <td>{r.toolName}</td>
                   <td>{r.startDate}</td>
                   <td>{r.finishDate}</td>
+                  
+                  {/* Lógica visual para mostrar si está atrasado (tu DTO envía 'late') */}
+                  <td>
+                    {r.late ? (
+                       <span style={{color: 'red', fontWeight: 'bold'}}>Atrasado</span>
+                    ) : (
+                       <span style={{color: 'green'}}>Al día</span>
+                    )}
+                  </td>
                 </tr>
               ))
             )}

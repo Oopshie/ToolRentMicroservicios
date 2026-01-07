@@ -54,8 +54,8 @@ export default function RentList() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const finish = new Date(rent.finishDate);
-    finish.setHours(0, 0, 0, 0);
+    const [year, month, day] = rent.finishDate.split("-");
+    const finish = new Date(year, month - 1, day);
 
     return !rent.returnDate && finish < today;
   };

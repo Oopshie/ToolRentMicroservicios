@@ -1,15 +1,22 @@
 import httpTool from "../http-common";
 
-const getActiveRents = () => {
-    return httpTool.get('/api/report/active-rents');
+const buildQueryParams = (from, to) => {
+    // Si viene null o undefined, enviamos string vacío
+    const f = from || ""; 
+    const t = to || "";
+    return `?from=${f}&to=${t}`;
+};
+
+const getActiveRents = (from, to) => {
+    return httpTool.get(`/api/report/active-rents${buildQueryParams(from, to)}`);
 }
 
-const getLateClients = () => {
-    return httpTool.get('/api/report/late-clients');
+const getLateClients = (from, to) => {
+    return httpTool.get(`/api/report/late-clients${buildQueryParams(from, to)}`);
 }
 
-const getToolRanking = () => {
-    return httpTool.get('/api/report/ranking');
+const getToolRanking = (from, to) => {
+    return httpTool.get(`/api/report/ranking${buildQueryParams(from, to)}`);
 }
 
 export default {getActiveRents, getLateClients, getToolRanking};

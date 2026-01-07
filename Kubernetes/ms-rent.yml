@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: ms-rent
-        image: oopshie/ms-rent:v1
+        image: oopshie/ms-rent:latest
         # ARGS: Tienen la prioridad más alta sobre cualquier application.yml
         args:
           # URL lógica: Debe ser exacta a lo que dice tu Token (localhost)

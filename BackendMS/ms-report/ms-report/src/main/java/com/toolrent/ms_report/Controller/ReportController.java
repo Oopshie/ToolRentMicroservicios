@@ -22,22 +22,27 @@ public class ReportController {
     // RF6.1 Listar préstamos activos
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     @GetMapping("/active-rents")
-    public ResponseEntity<List<ActiveRentReportDTO>> getActiveRents() {
-        // Llama al método que creamos en el servicio
-        return ResponseEntity.ok(reportService.getActiveRents());
+    public ResponseEntity<List<ActiveRentReportDTO>> getActiveRents(
+            @RequestParam(required = false) String from,
+            @RequestParam(required = false) String to) {
+        return ResponseEntity.ok(reportService.getActiveRents(from, to));
     }
 
     // RF6.2 Listar clientes con atrasos
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     @GetMapping("/late-clients")
-    public ResponseEntity<List<LateClientReportDTO>> getLateClients() {
-        return ResponseEntity.ok(reportService.getLateClients());
+    public ResponseEntity<List<LateClientReportDTO>> getLateClients(
+            @RequestParam(required = false) String from,
+            @RequestParam(required = false) String to) {
+        return ResponseEntity.ok(reportService.getLateClients(from, to));
     }
 
     // RF6.3 Ranking de herramientas
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     @GetMapping("/ranking")
-    public ResponseEntity<List<ToolRankingReportDTO>> getToolRanking() {
-        return ResponseEntity.ok(reportService.getToolRanking());
+    public ResponseEntity<List<ToolRankingReportDTO>> getToolRanking(
+            @RequestParam(required = false) String from,
+            @RequestParam(required = false) String to) {
+        return ResponseEntity.ok(reportService.getToolRanking(from, to));
     }
 }

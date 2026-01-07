@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: ms-kardex
-        image: oopshie/ms-kardex:v1
+        image: oopshie/ms-kardex:latest
         # ARGS: Tienen la prioridad más alta sobre cualquier application.yml
         args:
           # URL lógica: Debe ser exacta a lo que dice tu Token (localhost)

@@ -5,15 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="aa70f528-1fd9-4bc8-bc3b-d6896c184cb0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../ms-rate/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-rate/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-rent/ms-rent/src/main/java/com/toolrent/ms_rent/Entity/RentEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-rent/ms-rent/src/main/java/com/toolrent/ms_rent/Entity/RentEntity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-rent/ms-rent/src/main/java/com/toolrent/ms_rent/Model/RentDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-rent/ms-rent/src/main/java/com/toolrent/ms_rent/Model/RentDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ms-rent/ms-rent/src/main/java/com/toolrent/ms_rent/Service/RentService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-rent/ms-rent/src/main/java/com/toolrent/ms_rent/Service/RentService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../ms-client/.idea/discord.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ms-client/.idea/discord.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Model/Rent.java" beforeDir="false" afterPath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Model/Rent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Model/Tool.java" beforeDir="false" afterPath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Model/Tool.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Controller/ReportController.java" beforeDir="false" afterPath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Controller/ReportController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Service/ReportService.java" beforeDir="false" afterPath="$PROJECT_DIR$/ms-report/src/main/java/com/toolrent/ms_report/Service/ReportService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/.env" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/.env" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/src/components/RentsList.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/src/components/RentsList.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Frontend/src/components/ToolRankingReport.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/../../Frontend/src/components/ToolRankingReport.jsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Kubernetes/keycloak-client-secret.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Kubernetes/keycloak-client-secret.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Kubernetes/ms-client.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Kubernetes/ms-client.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Kubernetes/ms-kardex.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Kubernetes/ms-kardex.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Kubernetes/ms-rate.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Kubernetes/ms-rate.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Kubernetes/ms-rent.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Kubernetes/ms-rent.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Kubernetes/ms-report.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Kubernetes/ms-report.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Kubernetes/ms-tool.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../../Kubernetes/ms-tool.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,21 +35,21 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "Oopshie"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Oopshie&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Oopshie/ToolRentMicroservicios.git",
-    "accountId": "8c911d88-2831-4532-bbe4-68ef985f6907"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Oopshie/ToolRentMicroservicios.git&quot;,
+    &quot;accountId&quot;: &quot;8c911d88-2831-4532-bbe4-68ef985f6907&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="37oOzCJvX9XtrdNSGas9v0G8DCj" />
   <component name="ProjectLevelVcsManager">
     <ConfirmationsSetting value="2" id="Add" />
@@ -56,8 +61,11 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Application.MsReportApplication.executor": "Run",
+    "Maven.ms-report [clean].executor": "Run",
+    "Maven.ms-report [package].executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "main",
